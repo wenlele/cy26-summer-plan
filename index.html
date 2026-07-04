@@ -381,11 +381,13 @@
     }
 
     .rhythm,
+    .math-prompt,
     .day-card {
       padding: 14px;
     }
 
     .rhythm strong,
+    .math-prompt strong,
     .day-card strong {
       display: block;
       margin-bottom: 6px;
@@ -403,6 +405,42 @@
     .rhythm li,
     .day-card li {
       margin: 4px 0;
+    }
+
+    .math-prompt {
+      margin-bottom: 16px;
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface-soft);
+    }
+
+    .math-prompt p {
+      margin-bottom: 8px;
+    }
+
+    .math-answer {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+    }
+
+    .math-answer.show {
+      display: block;
+    }
+
+    .math-answer-button {
+      margin-top: 4px;
+    }
+
+    .math-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
     }
 
     .warning {
@@ -485,7 +523,7 @@
     <section class="hero">
       <p class="eyebrow">2026 暑假 · 一升二</p>
       <h1><span id="kidNameTitle">宝贝</span>暑假小计划</h1>
-      <p class="lead">目标不是“抢跑”，而是保住节奏：每天完成基础包，其中英语按“熏听 + 正常听说”累计 60 分钟以上，剩下时间多玩、多运动、多和爷爷奶奶生活在一起。</p>
+      <p class="lead">目标不是“抢跑”，而是保住节奏：每天完成基础包，其中英语按“熏听 + 正常听说”累计 60 分钟以上，数学每天 15 分钟练思维，剩下时间多玩、多运动、多和爷爷奶奶生活在一起。</p>
     </section>
 
     <div id="storageWarning" class="warning"></div>
@@ -494,7 +532,7 @@
       <div class="card metric">
         <span>今日星星</span>
         <strong id="starCount">0</strong>
-        <span>完成 4 个基础任务即可拿满</span>
+        <span>完成 5 个基础任务即可拿满</span>
       </div>
       <div class="card metric">
         <span>本周完成</span>
@@ -521,10 +559,22 @@
         <div class="progress-wrap">
           <div class="progress-label">
             <span id="progressText">今日进度</span>
-            <span id="coreText">基础包 0/4</span>
+            <span id="coreText">基础包 0/5</span>
           </div>
           <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
         </div>
+
+        <article class="math-prompt" aria-live="polite">
+          <div class="math-meta">
+            <span class="tag core">今日数学小题</span>
+            <span class="tag" id="mathType">数学思维</span>
+          </div>
+          <strong id="mathQuestion">加载中...</strong>
+          <p class="muted" id="mathGuide"></p>
+          <p class="muted" id="mathExtend"></p>
+          <button class="btn math-answer-button" id="mathAnswerButton" type="button" aria-expanded="false">查看参考答案</button>
+          <p class="math-answer" id="mathAnswer"></p>
+        </article>
 
         <div id="tasks" class="task-grid"></div>
         <p id="celebrate" class="celebrate">今天基础包完成啦。可以奖励一颗星，也可以让她自己选一个小活动。</p>
@@ -535,6 +585,7 @@
         <ul class="rules">
           <li><strong>少而稳：</strong>每天基础包完成就很好；英语可以分散听，不要求坐着学一小时。</li>
           <li><strong>先户外：</strong>北京夏天尽量上午 10 点前或傍晚后运动。</li>
+          <li><strong>数学先说：</strong>让孩子先讲思路，再写算式；说不清楚比算错更值得关注。</li>
           <li><strong>先表达：</strong>读完书、听完英语，让孩子讲出来，比刷题更重要。</li>
           <li><strong>不补账：</strong>某天没完成就翻篇，第二天重新开始。</li>
         </ul>
@@ -564,7 +615,7 @@
           <ul>
             <li>户外走路、跳绳、骑车或公园玩 30 分钟</li>
             <li>早餐、收拾或路上可熏听英语 20 分钟</li>
-            <li>回家后练字 10 分钟</li>
+            <li>回家后练字 10 分钟，数学思维 15 分钟</li>
           </ul>
         </div>
         <div class="rhythm">
@@ -592,13 +643,47 @@
     </section>
 
     <section class="card section">
+      <h2>数学思维怎么做</h2>
+      <div class="rhythm-grid">
+        <div class="rhythm">
+          <strong>数感</strong>
+          <ul>
+            <li>用扑克牌、积木或硬币凑数、拆数、比大小</li>
+            <li>重点问：你为什么这样想？</li>
+          </ul>
+        </div>
+        <div class="rhythm">
+          <strong>规律</strong>
+          <ul>
+            <li>找颜色、形状、数字、动作里的重复规律</li>
+            <li>让孩子自己补下一项、编一个规律</li>
+          </ul>
+        </div>
+        <div class="rhythm">
+          <strong>图形空间</strong>
+          <ul>
+            <li>拼七巧板、搭积木、看方位、画路线</li>
+            <li>多说上下左右、前后、对称、一样和不一样</li>
+          </ul>
+        </div>
+        <div class="rhythm">
+          <strong>生活题</strong>
+          <ul>
+            <li>超市找零、分水果、看钟表、数台阶</li>
+            <li>先画一画或摆一摆，再写算式</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section">
       <h2>一周节奏</h2>
       <div class="week-grid" id="weekPlan"></div>
     </section>
 
     <section class="card section">
       <h2>执行原则</h2>
-      <p class="muted">这个暑假计划用“基础包 + 弹性包”设计。基础包是每天最好完成的四件事：练字、语文阅读、英语输入、运动；其中英语按“熏听 + 正常听说”累计 60 分钟以上，熏听可以放在早餐、路上、玩耍间隙和睡前，正常听说要有跟读或复述。弹性包是家务、画画、手工、博物馆、公园、跟爷爷奶奶聊天。对一年级孩子来说，稳定节奏比提前学很多内容更重要，尤其暑假在老人身边，规则要清楚、任务要短、反馈要正向。</p>
+      <p class="muted">这个暑假计划用“基础包 + 弹性包”设计。基础包是每天最好完成的五件事：练字、语文阅读、数学思维、英语输入、运动；其中英语按“熏听 + 正常听说”累计 60 分钟以上，数学每天 15 分钟，只做一个小问题，重点是让孩子讲清楚思路。弹性包是家务、画画、手工、博物馆、公园、跟爷爷奶奶聊天。对一年级孩子来说，稳定节奏比提前学很多内容更重要，尤其暑假在老人身边，规则要清楚、任务要短、反馈要正向。</p>
     </section>
 
     <p class="footer">本页面只把打卡记录保存在这台设备的浏览器里，不会上传。换设备打开时，需要重新开始记录。</p>
@@ -606,6 +691,207 @@
 
   <script>
     const STORE_KEY = "lehe-summer-plan-2026-v1";
+    const mathQuestions = [
+      {
+        type: "数感",
+        question: "拿 10 个积木，分成两堆。你能分出几种？哪两种分法其实是反过来的？",
+        guide: "引导：边摆边说左边几个、右边几个，一共为什么还是 10。",
+        extend: "加一点：换成 12 个积木，看看能不能发现同样的规律。"
+      },
+      {
+        type: "数感",
+        question: "从 23 开始往后数 10 个数，再从 23 开始往前数 10 个数。",
+        guide: "引导：重点听跨整十，比如 29 后面是 30，20 前面是 19。",
+        extend: "加一点：问 23 离 20 近，还是离 30 近？为什么？"
+      },
+      {
+        type: "生活题",
+        question: "一个苹果 4 元，买 3 个要多少钱？给 20 元，应找回多少钱？",
+        guide: "引导：先画 3 个苹果或摆 3 组 4，再讲怎么加出来。",
+        extend: "加一点：如果只买 2 个，还能找回多少？"
+      },
+      {
+        type: "规律",
+        question: "按规律继续说 6 个：红、黄、黄、红、黄、黄、……",
+        guide: "引导：先找一组规律是几个，再补下去，不要只靠猜。",
+        extend: "加一点：让孩子自己编一个 3 个一组的颜色规律。"
+      },
+      {
+        type: "图形空间",
+        question: "用 4 根小棒能摆一个正方形。用 7 根小棒能摆两个连在一起的正方形吗？",
+        guide: "引导：动手摆，观察两个正方形共用一条边。",
+        extend: "加一点：三个连在一起的正方形需要几根小棒？"
+      },
+      {
+        type: "数感",
+        question: "不用数手指，想一想：8 + 7 可以怎么凑成 10 再算？",
+        guide: "引导：8 还差 2 到 10，把 7 拆成 2 和 5。",
+        extend: "加一点：再试试 9 + 6、7 + 8。"
+      },
+      {
+        type: "生活题",
+        question: "家里 5 个人，每人分 2 颗葡萄，一共需要几颗？如果有 14 颗，还剩几颗？",
+        guide: "引导：用真实葡萄、豆子或纸片摆一摆。",
+        extend: "加一点：如果每人分 3 颗，够不够？"
+      },
+      {
+        type: "规律",
+        question: "观察数字：2、4、6、8、10。下一个是多少？它们有什么共同点？",
+        guide: "引导：说出每次加 2，也可以说都是双数。",
+        extend: "加一点：从 1 开始每次加 2，会变成什么数列？"
+      },
+      {
+        type: "图形空间",
+        question: "在方格纸上走路线：向右 3 格，向上 2 格，向左 1 格。终点在哪里？",
+        guide: "引导：边走边说方向，别只看最后结果。",
+        extend: "加一点：让孩子给大人设计一条路线。"
+      },
+      {
+        type: "数感",
+        question: "想三个方法表示 15：可以用加法、减法、十和几，或者画图。",
+        guide: "引导：先说 15 可以拆成什么，再写算式。",
+        extend: "加一点：再用三个方法表示 18。"
+      },
+      {
+        type: "生活题",
+        question: "现在是 4 点，过 1 小时是几点？过 2 小时半大概是几点半？",
+        guide: "引导：用钟表或画钟面，先拨一拨再回答。",
+        extend: "加一点：如果 6 点吃饭，现在还要等多久？"
+      },
+      {
+        type: "比较",
+        question: "找家里 5 个东西，按从短到长排一排，再说为什么这样排。",
+        guide: "引导：重点是比较和表达，不要求测量特别准确。",
+        extend: "加一点：换成从轻到重、从大到小。"
+      },
+      {
+        type: "图形空间",
+        question: "找一找家里哪些东西像长方形、正方形、圆形、三角形。",
+        guide: "引导：让孩子说判断理由，比如四条边、四个角、圆圆的。",
+        extend: "加一点：哪些东西看起来像长方体或圆柱？"
+      },
+      {
+        type: "数感",
+        question: "比较 37 和 42，谁大？先说十位和个位怎么看。",
+        guide: "引导：先比十位，再比个位。",
+        extend: "加一点：比较 56 和 52、70 和 69。"
+      },
+      {
+        type: "生活题",
+        question: "电梯从 1 层到 8 层，一共上了几层？",
+        guide: "引导：这题容易答 8，可以画楼层线或数间隔。",
+        extend: "加一点：从 3 层到 10 层呢？"
+      },
+      {
+        type: "规律",
+        question: "按规律补数字：5、10、15、__、25、__。",
+        guide: "引导：先问每次多多少，再补空。",
+        extend: "加一点：从 3 开始每次加 5，写 6 个数。"
+      },
+      {
+        type: "图形空间",
+        question: "把一张纸对折再打开，折痕把纸分成了几部分？如果再对折一次呢？",
+        guide: "引导：实际折纸，观察平均分。",
+        extend: "加一点：每一份是不是一样大？为什么？"
+      },
+      {
+        type: "数感",
+        question: "用 1、2、3 这三个数字，可以组成哪些两位数？哪个最大，哪个最小？",
+        guide: "引导：用数字卡片摆，提醒十位不同会影响大小。",
+        extend: "加一点：如果加上数字 4 呢？"
+      },
+      {
+        type: "生活题",
+        question: "爷爷买了 12 个鸡蛋，早上吃了 3 个，还剩几个？晚上再吃 4 个呢？",
+        guide: "引导：先讲故事里的数量变化，再写算式。",
+        extend: "加一点：如果一盒有 10 个，12 个比一盒多几个？"
+      },
+      {
+        type: "规律",
+        question: "拍手规律：拍一下、停一下、拍两下、停一下、拍一下、停一下、拍两下……接下来呢？",
+        guide: "引导：用身体做规律，比只看数字更有趣。",
+        extend: "加一点：让孩子编一个动作规律给大人模仿。"
+      },
+      {
+        type: "图形空间",
+        question: "用七巧板或纸片拼一个房子，说说用了哪些图形。",
+        guide: "引导：描述图形的位置：上面、下面、左边、右边。",
+        extend: "加一点：不改变图形数量，能不能拼成小船？"
+      },
+      {
+        type: "数感",
+        question: "不用竖式，想一想：20 - 7 怎么算更快？",
+        guide: "引导：可以从 10 里拿，也可以先算 20 - 10 再加 3。",
+        extend: "加一点：试试 30 - 8。"
+      },
+      {
+        type: "生活题",
+        question: "一周有 7 天，暑假打卡 3 周一共有多少天？",
+        guide: "引导：画 3 行，每行 7 个点，数一数或连加。",
+        extend: "加一点：4 周呢？半周大概几天？"
+      },
+      {
+        type: "规律",
+        question: "数字 11、22、33、44 有什么共同点？下一个类似的数是多少？",
+        guide: "引导：观察十位和个位一样。",
+        extend: "加一点：这些数里哪个最大？哪个最小？"
+      },
+      {
+        type: "图形空间",
+        question: "看一件玩具，从前面、侧面、上面看到的样子一样吗？",
+        guide: "引导：换角度观察，描述看到的形状变化。",
+        extend: "加一点：画出其中一个角度看到的样子。"
+      },
+      {
+        type: "数感",
+        question: "妈妈说一个数比 30 大，比 40 小，个位是 5。这个数是多少？",
+        guide: "引导：用范围和个位两个条件一起判断。",
+        extend: "加一点：个位是 8 呢？比 50 大比 60 小呢？"
+      },
+      {
+        type: "生活题",
+        question: "如果每天读 2 页书，5 天读多少页？如果想读 12 页，需要几天多一点？",
+        guide: "引导：用画点、连加或分组解释。",
+        extend: "加一点：每天读 3 页，4 天是多少页？"
+      },
+      {
+        type: "综合",
+        question: "今天自己编一道数学小题，讲给爷爷奶奶做。",
+        guide: "引导：孩子能出题，说明她在理解数量关系。大人可以追问：为什么这样算？",
+        extend: "加一点：把题画出来，再写一个算式。"
+      }
+    ];
+    const mathAnswers = [
+      "参考答案：可以分成 0+10、1+9、2+8、3+7、4+6、5+5、6+4、7+3、8+2、9+1、10+0。1+9 和 9+1 是反过来的，2+8 和 8+2 也是。",
+      "参考答案：往后 10 个数是 24、25、26、27、28、29、30、31、32、33；往前 10 个数是 22、21、20、19、18、17、16、15、14、13。23 离 20 更近，差 3；离 30 差 7。",
+      "参考答案：4+4+4=12 元，或 4×3=12 元。给 20 元，找回 8 元。买 2 个是 8 元，找回 12 元。",
+      "参考答案：规律是一组 3 个：红、黄、黄。继续 6 个是红、黄、黄、红、黄、黄。",
+      "参考答案：可以。两个正方形连在一起共用一条边，所以需要 7 根。三个连在一起需要 10 根。",
+      "参考答案：8+7 可以把 7 拆成 2 和 5，8+2=10，10+5=15。所以 8+7=15。",
+      "参考答案：5 个人每人 2 颗，需要 10 颗。14 颗还剩 4 颗。如果每人分 3 颗，需要 15 颗，不够。",
+      "参考答案：下一个是 12。共同点是每次加 2，也都是双数。从 1 开始每次加 2 会是 1、3、5、7、9、11。",
+      "参考答案：从起点向右 3 格、向上 2 格、向左 1 格，最后相当于向右 2 格、向上 2 格。",
+      "参考答案：例子：10+5=15，20-5=15，15 可以看成 1 个十和 5 个一，也可以画 15 个点。",
+      "参考答案：4 点过 1 小时是 5 点；过 2 小时半是 6 点半。如果 6 点吃饭，从 4 点还要等 2 小时。",
+      "参考答案：没有唯一答案。关键是孩子能说出比较依据，比如谁更短、谁更长，是否需要对齐一端再比较。",
+      "参考答案：没有唯一答案。门、书、桌面可能像长方形；方巾可能像正方形；碗口、钟表可能像圆形；三角尺可能像三角形。",
+      "参考答案：42 大。先比十位，4 个十比 3 个十大，所以 42 大于 37。56 大于 52；70 大于 69。",
+      "参考答案：从 1 层到 8 层，上了 7 层，因为数的是楼层之间的间隔：1到2是1层，直到8共7层。从 3 到 10 也是 7 层。",
+      "参考答案：每次加 5，所以空格是 20 和 30。序列是 5、10、15、20、25、30。",
+      "参考答案：对折一次分成 2 部分；再对折一次通常分成 4 部分。每份一样大，因为是平均对折。",
+      "参考答案：可以组成 12、13、21、23、31、32。最大是 32，最小是 12。",
+      "参考答案：12-3=9，还剩 9 个；晚上再吃 4 个，9-4=5，还剩 5 个。12 比一盒 10 个多 2 个。",
+      "参考答案：接下来是停一下、拍一下、停一下、拍两下……规律是“拍一下、停、拍两下、停”循环。",
+      "参考答案：没有唯一答案。关键是能说出用了三角形、正方形、平行四边形等，以及它们在上面、下面、左边、右边。",
+      "参考答案：20-7=13。可以想 20-10=10，再把多减的 3 加回来，得到 13；30-8=22。",
+      "参考答案：3 周是 7+7+7=21 天，或 7×3=21 天。4 周是 28 天，半周大约 3 天半。",
+      "参考答案：共同点是十位和个位一样。下一个类似的数可以是 55。这里 44 最大，11 最小。",
+      "参考答案：没有唯一答案。很多玩具从不同方向看不一样，比如小汽车前面像车头、侧面能看到车身、上面看到车顶。",
+      "参考答案：这个数是 35。因为它在 30 和 40 之间，而且个位是 5。个位是 8 就是 38；比 50 大比 60 小且个位是 5 就是 55。",
+      "参考答案：每天 2 页，5 天是 10 页。想读 12 页，2 页一天需要 6 天。每天 3 页，4 天是 12 页。",
+      "参考答案：没有唯一答案。只要题目讲得清楚、数量关系合理、能画出来并写出对应算式，就算完成。"
+    ];
+
     const tasks = [
       {
         id: "handwriting",
@@ -621,6 +907,14 @@
         title: "语文阅读 20 分钟",
         detail: "自读、听读或亲子共读都可以。读完讲：人物是谁、发生了什么、自己喜欢哪里。",
         tags: ["基础包", "20 分钟"],
+        core: true
+      },
+      {
+        id: "math",
+        icon: "🧮",
+        title: "数学思维 15 分钟",
+        detail: "每天只做一个小问题：凑数拆数、找规律、拼图形或生活应用。先摆一摆或画一画，再让孩子说思路，最后写算式。",
+        tags: ["基础包", "15 分钟"],
         core: true
       },
       {
@@ -660,7 +954,7 @@
     const weekPlan = [
       ["周一", "阅读日", "认真读一个故事，并讲给爷爷奶奶听。"],
       ["周二", "英语日", "熏听时间拉长，正常听说多跟读几句，把最喜欢的一句说给爸爸妈妈听。"],
-      ["周三", "运动日", "户外运动稍微多一点，注意避开高温。"],
+      ["周三", "数学日", "多做一个数感、规律或图形小游戏，重点让孩子说清楚思路。"],
       ["周四", "生活日", "做一件家务，学习照顾自己和家人。"],
       ["周五", "表达日", "把本周最开心的一件事讲清楚。"],
       ["周六", "探索日", "公园、博物馆、手工、画画，任选一个小项目。"],
@@ -687,7 +981,13 @@
       tasks: document.getElementById("tasks"),
       celebrate: document.getElementById("celebrate"),
       dailyNote: document.getElementById("dailyNote"),
-      weekPlan: document.getElementById("weekPlan")
+      weekPlan: document.getElementById("weekPlan"),
+      mathType: document.getElementById("mathType"),
+      mathQuestion: document.getElementById("mathQuestion"),
+      mathGuide: document.getElementById("mathGuide"),
+      mathExtend: document.getElementById("mathExtend"),
+      mathAnswerButton: document.getElementById("mathAnswerButton"),
+      mathAnswer: document.getElementById("mathAnswer")
     };
 
     function formatDate(date) {
@@ -751,6 +1051,29 @@
       `).join("");
     }
 
+    function getMathQuestion(date) {
+      const dayNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+      return mathQuestions[dayNumber % mathQuestions.length];
+    }
+
+    function getMathQuestionIndex(date) {
+      const dayNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+      return dayNumber % mathQuestions.length;
+    }
+
+    function renderMathPrompt(date) {
+      const index = getMathQuestionIndex(date);
+      const item = mathQuestions[index];
+      elements.mathType.textContent = item.type;
+      elements.mathQuestion.textContent = item.question;
+      elements.mathGuide.textContent = item.guide;
+      elements.mathExtend.textContent = item.extend;
+      elements.mathAnswer.textContent = mathAnswers[index];
+      elements.mathAnswer.classList.remove("show");
+      elements.mathAnswerButton.textContent = "查看参考答案";
+      elements.mathAnswerButton.setAttribute("aria-expanded", "false");
+    }
+
     function getWeekDoneCount() {
       const today = new Date(selectedDate);
       const weekday = today.getDay() || 7;
@@ -812,6 +1135,7 @@
       elements.dailyNote.value = dayState.note || "";
       elements.celebrate.classList.toggle("show", coreDone === coreTasks.length);
 
+      renderMathPrompt(selectedDate);
       renderTasks(dayState);
       renderWarning();
     }
@@ -856,6 +1180,12 @@
       } catch (error) {
         prompt(`剪贴板不可用，请手动复制。原因：${error.message}`, text);
       }
+    });
+
+    elements.mathAnswerButton.addEventListener("click", () => {
+      const isOpen = elements.mathAnswer.classList.toggle("show");
+      elements.mathAnswerButton.textContent = isOpen ? "隐藏参考答案" : "查看参考答案";
+      elements.mathAnswerButton.setAttribute("aria-expanded", String(isOpen));
     });
 
     elements.kidNameInput.addEventListener("input", (event) => {
