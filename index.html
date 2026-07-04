@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>cy26 summer plan</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .hero,
+    .card,
+    .task,
+    .day-card {
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      box-shadow: 0 0 2px var(--cp-border), 0 1px 2px var(--cp-border);
+    }
+
+    .hero {
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--cp-accent);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(30px, 7vw, 56px);
+      line-height: 1.08;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: clamp(22px, 4vw, 32px);
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: var(--cp-text-muted);
+      font-size: 18px;
+    }
+
+    .top-grid,
+    .main-grid,
+    .task-grid,
+    .rhythm-grid,
+    .week-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .top-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 16px;
+    }
+
+    .main-grid {
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      align-items: start;
+    }
+
+    .task-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .rhythm-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .week-grid {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 116px;
+      justify-content: center;
+    }
+
+    .metric strong {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .metric span,
+    .muted {
+      color: var(--cp-text-muted);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .date-title {
+      margin-right: auto;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 0.625rem;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text);
+      border: 1px solid var(--cp-border);
+    }
+
+    .btn.primary {
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      border-color: var(--cp-accent);
+      font-weight: 700;
+    }
+
+    .btn:hover {
+      border-color: var(--cp-border-strong);
+    }
+
+    .btn.primary:hover {
+      background: var(--cp-accent-hover);
+    }
+
+    .progress-wrap {
+      margin-bottom: 16px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--cp-text-muted);
+      font-size: 14px;
+    }
+
+    .progress {
+      height: 16px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--cp-surface-soft);
+      border: 1px solid var(--cp-border);
+    }
+
+    .progress > div {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: var(--cp-accent);
+      transition: width 180ms ease;
+    }
+
+    .task {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      padding: 16px;
+      min-height: 132px;
+    }
+
+    .task.done {
+      background: var(--cp-accent-soft);
+      border-color: var(--cp-accent);
+    }
+
+    .check {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 0.625rem;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+    }
+
+    .check input {
+      width: 24px;
+      height: 24px;
+      accent-color: var(--cp-accent);
+    }
+
+    .task-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-weight: 800;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 3px 9px;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .tag.core {
+      border-color: var(--cp-accent);
+      color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+      font-weight: 700;
+    }
+
+    .note {
+      width: 100%;
+      min-height: 96px;
+      resize: vertical;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      padding: 12px;
+    }
+
+    .note:focus,
+    .name-input:focus {
+      outline: 2px solid var(--cp-accent);
+      outline-offset: 2px;
+    }
+
+    .name-input {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      padding: 10px 12px;
+    }
+
+    .celebrate {
+      display: none;
+      margin: 16px 0 0;
+      padding: 12px;
+      border-radius: 0.625rem;
+      background: var(--cp-accent-soft);
+      color: var(--cp-text);
+      border: 1px solid var(--cp-accent);
+      font-weight: 700;
+    }
+
+    .celebrate.show {
+      display: block;
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    .rhythm,
+    .day-card {
+      padding: 14px;
+    }
+
+    .rhythm strong,
+    .day-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .rhythm ul,
+    .rules,
+    .day-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--cp-text-muted);
+    }
+
+    .rules li,
+    .rhythm li,
+    .day-card li {
+      margin: 4px 0;
+    }
+
+    .warning {
+      display: none;
+      margin: 0 0 16px;
+      padding: 12px;
+      border-radius: 0.625rem;
+      border: 1px solid var(--cp-warning);
+      background: var(--cp-highlight);
+      color: var(--cp-text);
+    }
+
+    .warning.show {
+      display: block;
+    }
+
+    .footer {
+      margin: 24px 0 8px;
+      color: var(--cp-text-muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .top-grid,
+      .main-grid,
+      .task-grid,
+      .rhythm-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .week-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        padding: 12px;
+      }
+
+      .hero,
+      .card {
+        padding: 16px;
+      }
+
+      .toolbar {
+        align-items: stretch;
+      }
+
+      .date-title,
+      .btn {
+        width: 100%;
+      }
+
+      .week-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .toolbar,
+      .name-input,
+      .note {
+        display: none;
+      }
+
+      body {
+        background: var(--cp-bg);
+      }
+
+      .app {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <p class="eyebrow">2026 暑假 · 一升二</p>
+      <h1><span id="kidNameTitle">宝贝</span>暑假小计划</h1>
+      <p class="lead">目标不是“抢跑”，而是保住节奏：每天完成一个 60–80 分钟的基础包，剩下时间多玩、多运动、多和爷爷奶奶生活在一起。</p>
+    </section>
+
+    <div id="storageWarning" class="warning"></div>
+
+    <section class="top-grid" aria-label="今日概览">
+      <div class="card metric">
+        <span>今日星星</span>
+        <strong id="starCount">0</strong>
+        <span>完成 4 个基础任务即可拿满</span>
+      </div>
+      <div class="card metric">
+        <span>本周完成</span>
+        <strong id="weekDone">0 天</strong>
+        <span>周末只做回顾，不补作业</span>
+      </div>
+      <div class="card metric">
+        <span>建议总量</span>
+        <strong>60–80 分钟</strong>
+        <span>学习运动分散完成，不连续久坐</span>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card">
+        <div class="toolbar">
+          <div class="date-title" id="dateTitle">今天</div>
+          <button class="btn" id="prevDay" type="button">前一天</button>
+          <button class="btn" id="todayBtn" type="button">回到今天</button>
+          <button class="btn" id="nextDay" type="button">后一天</button>
+          <button class="btn primary" id="printBtn" type="button">打印/存 PDF</button>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span id="progressText">今日进度</span>
+            <span id="coreText">基础包 0/4</span>
+          </div>
+          <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+        </div>
+
+        <div id="tasks" class="task-grid"></div>
+        <p id="celebrate" class="celebrate">今天基础包完成啦。可以奖励一颗星，也可以让她自己选一个小活动。</p>
+      </div>
+
+      <aside class="card">
+        <h2>给爷爷奶奶看的规则</h2>
+        <ul class="rules">
+          <li><strong>少而稳：</strong>每天基础包完成就很好，不追求多。</li>
+          <li><strong>先户外：</strong>北京夏天尽量上午 10 点前或傍晚后运动。</li>
+          <li><strong>先表达：</strong>读完书、听完英语，让孩子讲出来，比刷题更重要。</li>
+          <li><strong>不补账：</strong>某天没完成就翻篇，第二天重新开始。</li>
+        </ul>
+
+        <div class="section">
+          <h3>孩子名字</h3>
+          <input class="name-input" id="kidNameInput" maxlength="12" value="宝贝" aria-label="孩子名字">
+        </div>
+
+        <div class="section">
+          <h3>今天最开心的事</h3>
+          <textarea class="note" id="dailyNote" placeholder="比如：今天读了什么书，运动玩了什么，英语说了哪一句。"></textarea>
+        </div>
+
+        <div class="toolbar section">
+          <button class="btn" id="clearDay" type="button">清空当天</button>
+          <button class="btn" id="exportBtn" type="button">导出记录</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="card section">
+      <h2>一天怎么安排</h2>
+      <div class="rhythm-grid">
+        <div class="rhythm">
+          <strong>上午：先动起来</strong>
+          <ul>
+            <li>户外走路、跳绳、骑车或公园玩 30 分钟</li>
+            <li>回家后练字 10 分钟</li>
+          </ul>
+        </div>
+        <div class="rhythm">
+          <strong>中午：休息为主</strong>
+          <ul>
+            <li>午饭后安静玩或午睡</li>
+            <li>不安排硬学习</li>
+          </ul>
+        </div>
+        <div class="rhythm">
+          <strong>下午：阅读和英语</strong>
+          <ul>
+            <li>语文阅读 20 分钟，读完讲一讲</li>
+            <li>英语听说 15 分钟，听一句跟一句</li>
+          </ul>
+        </div>
+        <div class="rhythm">
+          <strong>晚上：轻复盘</strong>
+          <ul>
+            <li>给爸爸妈妈说今天三件事</li>
+            <li>睡前可以再听一个故事</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>一周节奏</h2>
+      <div class="week-grid" id="weekPlan"></div>
+    </section>
+
+    <section class="card section">
+      <h2>执行原则</h2>
+      <p class="muted">这个暑假计划用“基础包 + 弹性包”设计。基础包是每天最好完成的四件事：练字、语文阅读、英语听说、运动；弹性包是家务、画画、手工、博物馆、公园、跟爷爷奶奶聊天。对一年级孩子来说，稳定节奏比提前学很多内容更重要，尤其暑假在老人身边，规则要清楚、任务要短、反馈要正向。</p>
+    </section>
+
+    <p class="footer">本页面只把打卡记录保存在这台设备的浏览器里，不会上传。换设备打开时，需要重新开始记录。</p>
+  </main>
+
+  <script>
+    const STORE_KEY = "lehe-summer-plan-2026-v1";
+    const tasks = [
+      {
+        id: "handwriting",
+        icon: "✍️",
+        title: "练字 10 分钟",
+        detail: "描红、临摹或工整抄一句。宁可少写，也要坐姿、握笔、笔画认真。",
+        tags: ["基础包", "10 分钟"],
+        core: true
+      },
+      {
+        id: "chinese",
+        icon: "📖",
+        title: "语文阅读 20 分钟",
+        detail: "自读、听读或亲子共读都可以。读完讲：人物是谁、发生了什么、自己喜欢哪里。",
+        tags: ["基础包", "20 分钟"],
+        core: true
+      },
+      {
+        id: "english",
+        icon: "🎧",
+        title: "英语听说 15 分钟",
+        detail: "听儿歌、分级读物或动画音频，跟读 3 句，再自己说 1 句。",
+        tags: ["基础包", "15 分钟"],
+        core: true
+      },
+      {
+        id: "exercise",
+        icon: "🏃",
+        title: "运动 30 分钟",
+        detail: "户外优先：跳绳、骑车、走路、公园玩。太热就改成室内拉伸、舞蹈或亲子小游戏。",
+        tags: ["基础包", "30 分钟"],
+        core: true
+      },
+      {
+        id: "life",
+        icon: "🥣",
+        title: "生活力小任务",
+        detail: "帮忙摆碗筷、收拾玩具、洗袜子、给乌龟换水。会生活也是暑假学习。",
+        tags: ["弹性包", "任选"],
+        core: false
+      },
+      {
+        id: "happy",
+        icon: "🌟",
+        title: "快乐记录",
+        detail: "画一幅小画、拍一张照片、讲一个今天的故事。给暑假留下证据。",
+        tags: ["弹性包", "任选"],
+        core: false
+      }
+    ];
+
+    const weekPlan = [
+      ["周一", "阅读日", "认真读一个故事，并讲给爷爷奶奶听。"],
+      ["周二", "英语日", "多跟读几句，把最喜欢的一句说给爸爸妈妈听。"],
+      ["周三", "运动日", "户外运动稍微多一点，注意避开高温。"],
+      ["周四", "生活日", "做一件家务，学习照顾自己和家人。"],
+      ["周五", "表达日", "把本周最开心的一件事讲清楚。"],
+      ["周六", "探索日", "公园、博物馆、手工、画画，任选一个小项目。"],
+      ["周日", "休息日", "不补作业，只回顾星星和开心事。"]
+    ];
+
+    let selectedDate = new Date();
+    let storageError = "";
+    let state = {
+      kidName: "宝贝",
+      days: {}
+    };
+
+    const elements = {
+      kidNameTitle: document.getElementById("kidNameTitle"),
+      kidNameInput: document.getElementById("kidNameInput"),
+      storageWarning: document.getElementById("storageWarning"),
+      dateTitle: document.getElementById("dateTitle"),
+      starCount: document.getElementById("starCount"),
+      weekDone: document.getElementById("weekDone"),
+      progressText: document.getElementById("progressText"),
+      coreText: document.getElementById("coreText"),
+      progressBar: document.getElementById("progressBar"),
+      tasks: document.getElementById("tasks"),
+      celebrate: document.getElementById("celebrate"),
+      dailyNote: document.getElementById("dailyNote"),
+      weekPlan: document.getElementById("weekPlan")
+    };
+
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function addDays(date, amount) {
+      const next = new Date(date);
+      next.setDate(next.getDate() + amount);
+      return next;
+    }
+
+    function getDayState(dateKey) {
+      if (!state.days[dateKey]) {
+        state.days[dateKey] = {
+          checks: {},
+          note: ""
+        };
+      }
+      return state.days[dateKey];
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = {
+            kidName: parsed.kidName || state.kidName,
+            days: parsed.days || {}
+          };
+        }
+      } catch (error) {
+        storageError = `浏览器没有允许本地保存，打卡可能无法长期保留：${error.message}`;
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      } catch (error) {
+        storageError = `保存失败，请检查浏览器或存储空间：${error.message}`;
+        renderWarning();
+      }
+    }
+
+    function renderWarning() {
+      elements.storageWarning.textContent = storageError;
+      elements.storageWarning.classList.toggle("show", Boolean(storageError));
+    }
+
+    function renderWeekPlan() {
+      elements.weekPlan.innerHTML = weekPlan.map(([day, title, detail]) => `
+        <article class="day-card">
+          <strong>${day} · ${title}</strong>
+          <ul><li>${detail}</li></ul>
+        </article>
+      `).join("");
+    }
+
+    function getWeekDoneCount() {
+      const today = new Date(selectedDate);
+      const weekday = today.getDay() || 7;
+      const start = addDays(today, 1 - weekday);
+      return Array.from({ length: 7 }, (_, index) => formatDate(addDays(start, index)))
+        .filter((dateKey) => {
+          const day = state.days[dateKey];
+          if (!day) return false;
+          return tasks.filter((task) => task.core).every((task) => day.checks[task.id]);
+        }).length;
+    }
+
+    function renderTasks(dayState) {
+      elements.tasks.innerHTML = tasks.map((task) => {
+        const checked = Boolean(dayState.checks[task.id]);
+        const tags = task.tags.map((tag) => `<span class="tag ${task.core && tag === "基础包" ? "core" : ""}">${tag}</span>`).join("");
+        return `
+          <article class="task ${checked ? "done" : ""}">
+            <label class="check" aria-label="${task.title}">
+              <input type="checkbox" data-task="${task.id}" ${checked ? "checked" : ""}>
+            </label>
+            <div>
+              <div class="task-title"><span aria-hidden="true">${task.icon}</span><span>${task.title}</span></div>
+              <div class="muted">${task.detail}</div>
+              <div class="tag-row">${tags}</div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      elements.tasks.querySelectorAll("input[type='checkbox']").forEach((input) => {
+        input.addEventListener("change", (event) => {
+          const dateKey = formatDate(selectedDate);
+          const current = getDayState(dateKey);
+          current.checks[event.target.dataset.task] = event.target.checked;
+          saveState();
+          render();
+        });
+      });
+    }
+
+    function render() {
+      const dateKey = formatDate(selectedDate);
+      const dayState = getDayState(dateKey);
+      const checkedCount = tasks.filter((task) => dayState.checks[task.id]).length;
+      const coreTasks = tasks.filter((task) => task.core);
+      const coreDone = coreTasks.filter((task) => dayState.checks[task.id]).length;
+      const percent = Math.round((checkedCount / tasks.length) * 100);
+      const isToday = dateKey === formatDate(new Date());
+
+      elements.kidNameTitle.textContent = state.kidName;
+      elements.kidNameInput.value = state.kidName;
+      elements.dateTitle.textContent = `${isToday ? "今天" : dateKey} · ${new Intl.DateTimeFormat("zh-CN", { weekday: "long" }).format(selectedDate)}`;
+      elements.starCount.textContent = String(coreDone);
+      elements.weekDone.textContent = `${getWeekDoneCount()} 天`;
+      elements.progressText.textContent = `今日进度 ${checkedCount}/${tasks.length}`;
+      elements.coreText.textContent = `基础包 ${coreDone}/${coreTasks.length}`;
+      elements.progressBar.style.width = `${percent}%`;
+      elements.dailyNote.value = dayState.note || "";
+      elements.celebrate.classList.toggle("show", coreDone === coreTasks.length);
+
+      renderTasks(dayState);
+      renderWarning();
+    }
+
+    document.getElementById("prevDay").addEventListener("click", () => {
+      selectedDate = addDays(selectedDate, -1);
+      render();
+    });
+
+    document.getElementById("nextDay").addEventListener("click", () => {
+      selectedDate = addDays(selectedDate, 1);
+      render();
+    });
+
+    document.getElementById("todayBtn").addEventListener("click", () => {
+      selectedDate = new Date();
+      render();
+    });
+
+    document.getElementById("printBtn").addEventListener("click", () => {
+      window.print();
+    });
+
+    document.getElementById("clearDay").addEventListener("click", () => {
+      if (!confirm("确定要清空当天记录吗？")) return;
+      const dateKey = formatDate(selectedDate);
+      state.days[dateKey] = { checks: {}, note: "" };
+      saveState();
+      render();
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", async () => {
+      const text = JSON.stringify(state, null, 2);
+      if (!navigator.clipboard) {
+        prompt("请复制下面的打卡记录：", text);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("打卡记录已复制，可以粘贴到备忘录保存。");
+      } catch (error) {
+        prompt(`剪贴板不可用，请手动复制。原因：${error.message}`, text);
+      }
+    });
+
+    elements.kidNameInput.addEventListener("input", (event) => {
+      state.kidName = event.target.value.trim() || "宝贝";
+      saveState();
+      render();
+    });
+
+    elements.dailyNote.addEventListener("input", (event) => {
+      const dateKey = formatDate(selectedDate);
+      getDayState(dateKey).note = event.target.value;
+      saveState();
+    });
+
+    loadState();
+    renderWeekPlan();
+    render();
+  </script>
+</body>
+</html>
